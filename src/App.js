@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { useState } from "react";
+import "./App.css";
+import Modal from "./components/Modal/Modal";
+import ToDoForm from "./components/ToDoForm/ToDoForm";
+import ToDoList from "./components/ToDoList/ToDoList";
 
 function App() {
+  const [todoList, setTodoList] = useState([]);
+  const [isError, setIsError] = useState(false);
+
+  const getToDo = (todo) => {
+    setTodoList((prevList) => {
+      return [...prevList, todo];
+    });
+  };
+
+  const deleteToDo = (id) => {
+    setTodoList((prevList) => {
+      const updatedList = prevList.filter((list) => list.id !== id);
+      return updatedList;
+    });
+  };
+
+  const checkValid = (isValid) => {
+    if (isValid === true) {
+      setIsError(true);
+    } else {
+      setIsError(false);
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {isError && <Modal onGetError={checkValid}></Modal>}
+      <ToDoForm onGetTodo={getToDo} onGetError={checkValid}></ToDoForm>
+      <ToDoList todoList={todoList} onDeleteTodo={deleteToDo}></ToDoList>
     </div>
   );
 }
